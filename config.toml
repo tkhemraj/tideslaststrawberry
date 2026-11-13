@@ -1,0 +1,23 @@
+# tideslaststrawberry — tuned mprisence config
+# Strawberry → Discord Rich Presence, made hot.
+
+interval = 2000
+
+[template]
+detail = "{{{title}}}"
+state = "{{{artist_display}}}"
+large_text = "{{#if album}}{{{album}}}{{#if year}} ({{{year}}}){{/if}}{{/if}}"
+small_text = "🍓 Strawberry"
+
+[time]
+show = true
+as_elapsed = true
+
+[cover.provider]
+provider = ["musicbrainz", "catbox"]
+
+# Strawberry can stream (Tidal/Subsonic/radio) — don't hide streamed tracks,
+# and show the player icon.
+[player.strawberry]
+allow_streaming = true
+show_icon = true

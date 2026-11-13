@@ -1,0 +1,13 @@
+[Unit]
+Description=mprisence — Discord Rich Presence for MPRIS (Strawberry)
+Documentation=https://github.com/tkhemraj/tideslaststrawberry
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.cargo/bin/mprisence
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
