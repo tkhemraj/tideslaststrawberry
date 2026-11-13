@@ -72,9 +72,20 @@ systemctl --user is-active mprisence          # -> active
 journalctl --user -u mprisence -n 20          # -> "Updated Discord activity for Strawberry - ..."
 ```
 
-If it's `active` but Discord is still blank, check the two things Discord's side needs:
-1. the **desktop** Discord app is running (not just the browser tab), and
-2. **Activity Privacy → Share detected activities** is turned on.
+If it's `active` but Discord is still blank, it's almost always one of three things:
+
+1. **Activity type.** Discord silently drops third-party **"Listening"** presences for
+   non-whitelisted apps — it only reliably renders **"Playing"**. The shipped config forces
+   it (`[activity_type] default = "playing"`, and `override_activity_type = "playing"` on
+   Strawberry). If you see `Updated Discord activity … (Playing)` in the logs but nothing on
+   your profile, this was the culprit — make sure you're on a config with the Playing override.
+2. **Activity Privacy.** Discord → Settings → **Activity Privacy → "Share your detected
+   activities with others"** must be **on**.
+3. The **desktop** Discord app is running (not just the browser tab).
+
+Confirm the daemon's side with `journalctl --user -u mprisence -n 5` — a line like
+`Updated Discord activity for Strawberry - <track> (Playing)` means mprisence did its job and
+any remaining blank is one of the Discord-side toggles above.
 
 ## Make it yours
 
@@ -82,6 +93,10 @@ Everything lives in `~/.config/mprisence/config.toml`. The shipped config turns 
 time, album art, and streaming. A few knobs:
 
 ```toml
+[activity_type]
+use_content_type = false   # don't auto-pick "listening" (Discord drops it)
+default = "playing"        # "playing" renders reliably
+
 [time]
 show = true
 as_elapsed = true          # elapsed, not remaining
@@ -90,13 +105,14 @@ as_elapsed = true          # elapsed, not remaining
 provider = ["musicbrainz", "catbox"]
 
 [template]
-detail = "{{{title}}}"                 # top line
-state  = "{{{artist_display}}}"        # second line
+details = "{{{title}}}"                # top line
+state   = "{{{artist_display}}}"       # second line
 large_text = "{{{album}}}"             # hover-over-cover text
 
 [player.strawberry]
-allow_streaming = true     # show Tidal/Subsonic/radio tracks too
+allow_streaming = true         # show Tidal/Subsonic/radio tracks too
 show_icon = true
+override_activity_type = "playing"
 ```
 
 Verify any change with `mprisence config show`, then `systemctl --user restart mprisence`.

@@ -3,8 +3,14 @@
 
 interval = 2000
 
+# Discord silently drops third-party "Listening" presences for non-whitelisted
+# apps; "Playing" renders reliably. Force it.
+[activity_type]
+use_content_type = false
+default = "playing"
+
 [template]
-detail = "{{{title}}}"
+details = "{{{title}}}"
 state = "{{{artist_display}}}"
 large_text = "{{#if album}}{{{album}}}{{#if year}} ({{{year}}}){{/if}}{{/if}}"
 small_text = "🍓 Strawberry"
@@ -21,3 +27,4 @@ provider = ["musicbrainz", "catbox"]
 [player.strawberry]
 allow_streaming = true
 show_icon = true
+override_activity_type = "playing"
